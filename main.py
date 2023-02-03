@@ -15,7 +15,7 @@ if __name__=='__main__':
             os.mkdir(args.output)
         with open(os.path.join(args.output,"params.json"),"w") as file:
             file.write(json.dumps(args.__dict__))
-        os.system(f"bash run.sh {args.output} > {args.output}/run.log 2>&1 &")
+        os.system(f"bash run.sh {args.output}")
     except KeyboardInterrupt:
         sys.stderr.write("User interrupted me!\n")
         sys.exit(0)
