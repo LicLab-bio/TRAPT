@@ -1,6 +1,5 @@
 File structure.txt
-
-
+input
 jbrowse2.zip
 output
 __pycache__
@@ -11,4 +10,5 @@ script/PPI/output
 script/RP/output
 script/RP/__pycache__
 jbrowse2
-web/main/__pycache__
+web
+.gitignore
