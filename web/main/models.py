@@ -7,7 +7,7 @@ from uuid import uuid1
 
 import pandas as pd
 
-PATH = "/data/zgr/data/TCAPT/TCAPT"
+PATH = "/mnt/data2/python_web/TCAPT"
 PATH_OUT = f"{PATH}/jbrowse2/output"
 
 def mException(func):
