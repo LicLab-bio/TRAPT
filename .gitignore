@@ -1,0 +1,14 @@
+File structure.txt
+
+
+jbrowse2.zip
+output
+__pycache__
+.vscode
+*.zip
+.gitignore
+script/PPI/output
+script/RP/output
+script/RP/__pycache__
+jbrowse2
+web/main/__pycache__
