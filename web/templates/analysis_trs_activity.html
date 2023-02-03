@@ -1,0 +1,275 @@
+{% extends "public.html" %}
+{% block content %}
+<section class="section team-2">
+    <div class="container">
+        <div class="alert alert-danger" hidden>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <i class="fa fa-times"></i>
+            </button>
+            <span>
+                <b> 正在修改代码，请稍后。。。 </b></span>
+        </div>
+        <div class="row">
+            <div class="col-md-8 mx-auto text-center mb-5">
+                <h3 class="display-3">TRs activity predict results<b id="title"></b></h3>
+                <h4 class="lead">Algorithm will run for several minutes, please save ID number.</h4>
+                <h4 class="lead">UUID is <b class="text-success" id="uuid"></b></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header card-header-info">
+                        <h4 class="pt-2">Show log</h4>
+                    </div>
+                    <div class="card-body pt-2" id="log_body" style="height: 200px;overflow-y: auto;">
+                    </div>
+                </div>
+                <button id="pause" onclick="pauseLog()" class="btn btn-primary">Pause</button>
+                <button id="continue" onclick="printLog()" class="btn btn-primary">Continue</button>
+                <button id="try_again" onclick="tryAgain()" class="btn btn-message">Try again?</button>
+
+                <div class="card">
+                    <div class="card-header card-header-success">
+                        <h4 class="pt-2">Show results</h4>
+                    </div>
+                    <div class="card-body" id="jbrowse_body">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <iframe src="" class="embed-responsive-item"></iframe>
+                        </div>
+                    </div>
+                    <div class="card-body" id="Table_body">
+                        <h4 class="lead mt-2 text-grey">Please be patient and wait for the result. <i
+                                class="fa fa-spinner fa-spin"></i></h5>
+                    </div>
+                </div>
+
+                <div class="card" id="Other_info">
+                    <div class="card-header card-header-success">
+                        <h4 class="pt-2">Other info</h4>
+                    </div>
+                    <div class="card-body" id="Other_body">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $('#jbrowse_body').hide()
+    $('#Other_info').hide()
+    function draw_line(data) {
+        console.log(data)
+        $.ajax({
+            url: 'drawLine',
+            type: 'POST',
+            data: {
+                "uuid": getPar('uuid'),
+                "tr": data
+            },
+            dataType: "json",
+            success: function (data) {
+                $('#jbrowse_body iframe')[0].src = "http://8.218.144.187:8130?config=output/" + getPar('uuid') + "/config.json&session=spec-" + JSON.stringify(data)
+                $('#jbrowse_body').show()
+            }
+        })
+    }
+
+    function tryAgain() {
+        $.ajax({
+            url: 'tryAgain',
+            type: 'POST',
+            data: { "uuid": getPar('uuid') },
+            success: function (r) {
+                printLog()
+                showTable()
+            }
+        })
+    }
+
+    $('#uuid').text(getPar('uuid'))
+    function detail(data) {
+        console.log(data)
+    }
+
+    function getTRsActivityTable() {
+        $.ajax({
+            url: "getTRsActivityTable",
+            type: "POST",
+            data: { "uuid": getPar('uuid') },
+            dataType: "json",
+            success: function (data) {
+                $('#Other_info').show()
+                $("#Other_body").html(`<table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Predicted ATAC signal frequency histogram</td>
+                            <td><a
+                                    href="/static/jbrowse2/output/uuid/atac_dhs_pred.html">TO</a>
+                            </td>
+                            <td>Filter ATAC signal frequency histogram</td>
+                            <td><a
+                                    href="/static/jbrowse2/output/uuid/atac_dhs_filter.html">TO</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Predicted H3K27ac signal frequency histogram</td>
+                            <td><a
+                                    href="/static/jbrowse2/output/uuid/chip_dhs_pred.html">TO</a>
+                            </td>
+                            <td>Filter H3K27ac signal frequency histogram</td>
+                            <td><a
+                                    href="/static/jbrowse2/output/uuid/chip_dhs_filter.html">TO</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Predicted ATAC bigwig file</td>
+                            <td><a download="ATAC.bw"
+                                    href="/static/jbrowse2/output/uuid/atac.bw">ATAC.bw</a>
+                            </td>
+                            <td>Predicted H3K27ac bigwig file</td>
+                            <td><a download="H3K27ac.bw"
+                                    href="/static/jbrowse2/output/uuid/chip.bw">H3K27ac.bw</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Adjacency matrix for VGAE prediction</td>
+                            <td><a href="/static/jbrowse2/output/uuid/STM.png">STM.png</a>
+                            </td>
+                            <td>Predicted consensus activity enhancer</td>
+                            <td><a download="CAE.bed"
+                                    href="/static/jbrowse2/output/uuid/CAE.bed">CAE.bed</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>`.replaceAll('uuid', getPar('uuid')))
+                $('#Table_body').html('<table id="Table" class="table table-striped table-bordered table-hover"></table>')
+                /*表格*/
+                $('#Table').dataTable({
+                    "buttons": [{
+                        "extend": 'csvHtml5',
+                        "title": getPar('uuid'),
+                        "text": '<a href="/static/output/' + getPar('uuid') + '/activity_summary.csv" class="btn btn-default"><i class="fa fa-cloud-download"></i></a>',
+                    }],
+                    "data": data,
+                    "columns": [
+                        { "title": "Rank" },
+                        { "title": "TR name" },
+                        { "title": "TR activity" },
+                        { "title": "Interaction score" },
+                        { "title": "CRE score" },
+                        { "title": "ATAC score" },
+                        { "title": "H3K27ac score" },
+                        { "title": "RP ATAC score" },
+                        { "title": "RP H3K27ac score" },
+                        { "title": "Detail" },
+                    ],
+                    "dom": '<"row"<"col-lg-12 d-flex justify-content-between align-items-baseline"<iB>f><"col-lg-12 mb-2"rt><"col-lg-12 d-flex justify-content-between align-items-end"lp>>',
+                    "lengthMenu": [10, 25, 50, 100],
+                    "autoWidth": false,
+                    "scrollX": true,
+                    "order": [[0, "asc"]], //默认排序
+                    "language": { // 定义语言
+                        "paginate": {
+                            "first": "<<",
+                            "previous": "<",
+                            "next": ">",
+                            "last": ">>"
+                        }
+                    },
+                    "columnDefs": [
+                        {
+                            "targets": [-1],  // 目标列位置，下标从0开始
+                            "data": 1,  // 数据列名
+                            "render": function (data, type, full) {  // 返回自定义内容
+                                return "<button onclick='draw_line(\"" + data + "\")' class='btn btn-default'><b>Jbrowse2</b></button>";
+                            }
+                        }
+                    ],
+                    "createdRow": function (row, data, dataIndex) {
+                        $(row).children('td').each((i, e) => {
+                            if (e.innerText === '')
+                                $(e).html('No data.');
+                            $(e).attr('title', e.innerText);
+                        });
+                    }
+                });
+            }
+        });
+    }
+    function getPar(par) {
+        //获取当前URL
+        var local_url = document.location.href;
+        //获取要取得的get参数位置
+        var get = local_url.indexOf(par + "=");
+        if (get == -1) {
+            return false;
+        }
+        //截取字符串
+        var get_par = local_url.slice(par.length + get + 1);
+        //判断截取后的字符串是否还有其他get参数
+        var nextPar = get_par.indexOf("&");
+        if (nextPar != -1) {
+            get_par = get_par.slice(0, nextPar);
+        }
+        return get_par;
+    }
+
+    function printLog() {
+        $('#pause').show()
+        $('#try_again').hide()
+        $('#continue').hide()
+        window.log = setInterval(function () {
+            $.ajax({
+                url: "getLog",
+                type: 'POST',
+                data: { "uuid": getPar('uuid') },
+                dataType: "html",
+                success: function (log) {
+                    $('#log_body').html(log)
+                    $('#log_body').scrollTop($('#log_body')[0].scrollHeight)
+                    if (log.match('Traceback') || log === "None") {
+                        clearInterval(window.log)
+                        pauseGetTable()
+                        $('#try_again').show()
+                    }
+                }
+            })
+        }, 1000)
+    }
+
+    function showTable() {
+        window.getTable = setInterval(function () {
+            $.ajax({
+                url: "isFinal",
+                type: 'POST',
+                data: { "uuid": getPar('uuid') },
+                dataType: "json",
+                success: function (r) {
+                    if (r === true) {
+                        getTRsActivityTable()
+                        clearInterval(window.log)
+                        pauseGetTable()
+                    }
+                }
+            })
+        }, 1000)
+    }
+
+    function pauseLog() {
+        clearInterval(window.log)
+        $('#continue').show()
+    }
+    function pauseGetTable() {
+        $('#pause').hide()
+        clearInterval(window.getTable)
+    }
+
+    printLog()
+    showTable()
+
+
+
+</script>
+{% endblock %}

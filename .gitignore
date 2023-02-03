@@ -10,5 +10,4 @@ script/PPI/output
 script/RP/output
 script/RP/__pycache__
 jbrowse2
-web
 .gitignore
