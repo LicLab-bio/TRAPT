@@ -9,3 +9,4 @@ script/RP/output
 script/RP/__pycache__
 jbrowse2
 .gitignore
+web/static/download
