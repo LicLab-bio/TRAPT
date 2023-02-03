@@ -1,11 +1,9 @@
 File structure.txt
 input
-jbrowse2.zip
 output
 __pycache__
 .vscode
 *.zip
-.gitignore
 script/PPI/output
 script/RP/output
 script/RP/__pycache__
