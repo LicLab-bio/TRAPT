@@ -4,12 +4,13 @@
   <div class="col px-0">
     <div class="row align-items-center justify-content-center">
       <div class="col-lg-6 text-center">
-        <h3 class="display-3 text-black">TCAPT</h3>
+        <h3 class="display-3 text-black">TRAPT</h3>
         <p class="lead mt-0 text-black">Combining graph convolution and knowledge distillation to predict
           transcriptional cofactor and chromatin regulator activity.
         </p>
         <br>
-        <div class="buttons"><a class="btn btn-success" href="/TCAPT/analysis">Analysis <i class="fa fa-arrow-right"></i></a>
+        <div class="buttons"><a class="btn btn-success" href="/TRAPT/analysis">Analysis <i
+              class="fa fa-arrow-right"></i></a>
           <p class="lead mt-5 text-black">Jump to analysis results.
           </p>
           <br>
@@ -25,7 +26,7 @@
   <script>
     function resultTRAPT() {
       var uuid = $('#uuid').val()
-      window.location = '/TCAPT/analysis_trs_activity?uuid=' + uuid
+      window.location = '/TRAPT/analysis_trs_activity?uuid=' + uuid
     }
   </script>
   {% endblock %}

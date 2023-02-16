@@ -53,7 +53,7 @@
         var vgae_iterations = $('#vgae_iterations').val()
         var range_threshold = $('#range_threshold').val()
         $.ajax({
-            url: '/TCAPT/run',
+            url: '/TRAPT/run',
             type: 'POST',
             data: {
                 "gene_set": gene_set,
@@ -62,7 +62,7 @@
 
             },
             success: function (uuid) {
-                window.location = '/TCAPT/analysis_trs_activity?uuid=' + uuid
+                window.location = '/TRAPT/analysis_trs_activity?uuid=' + uuid
             }
         })
     }

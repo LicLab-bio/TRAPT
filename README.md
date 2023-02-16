@@ -8,7 +8,7 @@ pip install -r requirement.txt
 install.packages("BiocManager")
 BiocManager::install("sva")
 ```
-# Run TCAPT
+# Run TRAPT
 ```python3
 python3 main.py -i example/geneset.txt -o output
 ```
