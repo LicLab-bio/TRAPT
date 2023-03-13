@@ -13,7 +13,7 @@ from args import args_
 
 args = args_(sys.argv[1])
 
-tr_dhs_ad = ad.read_h5ad('input/tr_filter_dhs_ad.h5ad')
+tr_dhs_ad = ad.read_h5ad('input/tr_dhs_ad.h5ad')
 
 chip_dhs = sparse.load_npz('%s/chip_dhs.npz' % args.output).toarray()
 atac_dhs = sparse.load_npz('%s/atac_dhs.npz' % args.output).toarray()

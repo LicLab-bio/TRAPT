@@ -14,7 +14,7 @@ fi
 
 if [ ! -f "$output/chip_dhs.npz" ]
 then
-    echo "Get ChIP-DHS matrix."
+    echo "Get H3K27ac-DHS matrix."
     python3 get_sample_dhs.py $output chip
 fi
 
@@ -26,7 +26,7 @@ fi
 
 if [ ! -f "$output/auc_tr_chip_ad.h5ad" ]
 then
-    echo "Get TR-ChIP AUC."
+    echo "Get TR-H3K27ac AUC."
     python3 calc_auc_tr_chip.py $output
 fi
 
@@ -44,7 +44,7 @@ fi
 
 if [ ! -f "$output/auc_rp_chip_ad.h5ad" ]
 then
-    echo "Get RP-ChIP AUC."
+    echo "Get RP-H3K27ac AUC."
     python3 calc_auc_rp_chip.py $output
 fi
 
@@ -62,7 +62,7 @@ fi
 
 if [ ! -f "$output/chip.bw" ]
 then
-    echo "ChIP DHS bw file."
+    echo "H3K27ac DHS bw file."
     python3 bed2bw.py $output chip
 fi
 
@@ -76,12 +76,6 @@ if [ ! -f "$output/input_gene.gff3.gz.tbi" ]
 then
     echo "Input genes gff3 file."
     python3 gene2gff3.py $output
-fi
-
-if [ ! -f "$output/CAE.bed" ]
-then
-    echo "Predictive consensus activity enhancer."
-    python3 call_cae.py $output
 fi
 
 if [ ! -f "$output/activity_summary.csv" ]

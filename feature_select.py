@@ -28,7 +28,7 @@ def get_auc_auprc(label,pred):
     roc_auc = metrics.auc(fpr, tpr)
     return roc_auc,auprc
 
-data_ad = anndata.read_h5ad(f'input/regu_matrix_{sample}_ad.h5ad')
+data_ad = anndata.read_h5ad(f'input/rp_matrix_{sample}_100kb_ad.h5ad')
 geneset = pd.read_csv(args.input,header=None)[0]
 genes = data_ad.var_names.values
 sample_names = data_ad.obs_names.values
@@ -62,7 +62,7 @@ output = Dense(1,activation='sigmoid')(t)
 teacher = Model(input,output)
 teacher.compile(optimizer=Adam(learning_rate=lamba[sample]/10), loss='mse')
 teacher.summary()
-teacher.fit(X, T, epochs=64, batch_size=256, sample_weight=sample_weight,verbose=0)
+teacher.fit(X, T, epochs=8, batch_size=32, sample_weight=sample_weight,verbose=0)
 
 T_pred = teacher.predict(X)
 print('Teacher AUC,AUPRC is ',get_auc_auprc(T, T_pred))
@@ -77,37 +77,26 @@ y = Dense(Y.shape[-1], activation='sigmoid')(x)
 student = Model(input,y)
 student.compile(optimizer=Adam(learning_rate=lamba[sample]/10), loss='mse')
 student.summary()
-student.fit(X, Y, epochs=64, batch_size=256,sample_weight=sample_weight,verbose=0)
+student.fit(X, Y, epochs=8, batch_size=32,sample_weight=sample_weight,verbose=0)
 
 # get the first layer weights.
 weights = student.layers[1].get_weights()[0]
 # get the feature importance.
 feature_importances = np.sum(np.square(weights),1)
 
-feature_indexs = np.argsort(-feature_importances)
-
-for i in range(len(feature_indexs)):
-    indexs = feature_indexs[:i]
-    if i > 50:
-        feature_indexs = feature_indexs[:10]
-        print("feature_indexs",feature_indexs.shape)
-        break
-    if feature_importances[indexs].sum() > .99 * feature_importances.sum():
-        feature_indexs = indexs
-        print("feature_indexs",feature_indexs.shape)
-        break
+feature_indexs = np.argsort(-feature_importances)[:20]
 
 X_filter = X[:,feature_indexs]
 # The new model is used to predict the enhanced sub-signal.
 input = Input(X_filter.shape[1:])
 input = Dropout(.2)(input)
-x = Dense(args.dim, activation='sigmoid')(input)
+x = Dense(args.dim * 4, activation='sigmoid')(input)
 x = Dropout(.2)(x)
 output = Dense(1,activation='sigmoid')(x)
 model = Model(input,output)
 model.compile(optimizer=Adam(learning_rate=lamba[sample]/10), loss='mse')
 model.summary()
-model.fit(X_filter, T, epochs=64, batch_size=256,sample_weight=sample_weight,verbose=0)
+model.fit(X_filter, T, epochs=8 * 4, batch_size=32,sample_weight=sample_weight,verbose=0)
 
 T_pred = model.predict(X_filter)
 print('Filter AUC,AUPRC is ',get_auc_auprc(T, T_pred))

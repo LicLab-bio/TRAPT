@@ -59,27 +59,12 @@ def save_hist(sample_dhs_filter,bins,title):
     bar.render(f"{args.output}/{title}.html")
 
 bins = 1000
-input_gene_dhs_index = args.get_dhs_index()
-hist,bin_edges = np.histogram(sample_dhs_pred[input_gene_dhs_index],bins=bins)
-save_hist(sample_dhs_pred[input_gene_dhs_index],bins,f'{sample}_dhs_pred')
+hist,bin_edges = np.histogram(sample_dhs_pred,bins=bins)
+save_hist(sample_dhs_pred,bins,f'{sample}_dhs_pred')
 
-# evs = bin_edges[signal.argrelextrema(hist, np.greater)]
+significance_index = np.argsort(sample_dhs_pred.flatten())
+print(significance_index.shape)
 
-for i in range(1,len(hist)):
-    if hist[:i].sum() > args.range_threshold * hist.sum():
-        down = bin_edges[i]
-        print('# # # down # # #',down)
-        break
-for i in range(1,len(hist)):
-    if hist[-i:].sum() > args.range_threshold * hist.sum():
-        up = bin_edges[-i]
-        print('# # # up # # #',up)
-        break
-significance_index = np.where(np.any(np.hstack([
-    sample_dhs_pred[input_gene_dhs_index] <= down,
-    sample_dhs_pred[input_gene_dhs_index] >= up
-]),axis=1))[0]
-significance_index = input_gene_dhs_index[significance_index]
 sample_dhs_filter = sample_dhs_pred[significance_index]
 save_hist(sample_dhs_filter,bins,f'{sample}_dhs_filter')
 

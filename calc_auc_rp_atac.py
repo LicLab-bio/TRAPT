@@ -47,8 +47,8 @@ def get_auc_(params):
         auc = 0
     return i,j,auc
 
-matrix = ad.read_h5ad('input/regu_matrix_tr_ad.h5ad')
-data_ad = ad.read_h5ad('input/regu_matrix_atac_ad.h5ad')
+matrix = ad.read_h5ad('input/rp_matrix_tr_100kb_ad.h5ad')
+data_ad = ad.read_h5ad('input/rp_matrix_atac_100kb_ad.h5ad')
 samples = pd.read_csv('%s/sample_names_atac.csv' % args.output,header=None)[0].values
 try:
     data = data_ad[samples].to_df().T.values

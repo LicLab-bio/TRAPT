@@ -16,7 +16,7 @@ args = args_(sys.argv[1])
 sample_dhs = sparse.load_npz('%s/chip_dhs.npz' % args.output)
 sample_dhs = sample_dhs.toarray()
 
-tr_dhs_ad = ad.read_h5ad('input/tr_filter_dhs_ad.h5ad')
+tr_dhs_ad = ad.read_h5ad('input/tr_dhs_ad.h5ad')
 
 significance_index = pd.read_csv('%s/significance_index_chip.csv' % args.output,header=None)[0].values
 
