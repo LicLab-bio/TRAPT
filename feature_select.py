@@ -28,20 +28,27 @@ def get_auc_auprc(label,pred):
     roc_auc = metrics.auc(fpr, tpr)
     return roc_auc,auprc
 
-data_ad = anndata.read_h5ad(f'input/rp_matrix_{sample}_100kb_ad.h5ad')
+data_ad = anndata.read_h5ad(f'input/rp_matrix_{sample}_50kb_ad.h5ad')
 geneset = pd.read_csv(args.input,header=None)[0]
 genes = data_ad.var_names.values
 sample_names = data_ad.obs_names.values
 status = np.zeros(len(genes))
 mask = np.in1d(genes,geneset)
 
-pos_weight = float(len(mask) - mask.sum()) / mask.sum()
-weight_mask = mask == 1
+np.random.seed(0)
+true_index = np.where(mask)[0]
+false_index = np.random.choice(np.where(~mask)[0],3000,replace=False)
+train_index = np.append(true_index,false_index)
+
+train_mask = mask[train_index]
+
+pos_weight = float(len(train_mask) - train_mask.sum()) / train_mask.sum()
+weight_mask = train_mask == 1
 sample_weight = np.ones(len(weight_mask))
 sample_weight[weight_mask] = pos_weight
 
-X = data_ad.T.to_df().values
-T = mask.astype(int)
+X = data_ad.T[train_index].to_df().values
+T = train_mask.astype(int)
 
 lamba = {
     "chip":0.005,

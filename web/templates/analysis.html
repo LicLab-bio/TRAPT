@@ -24,7 +24,7 @@
 
                             <div class="col-md-6">
                                 <div class="form-group bmd-form-group" id="range_threshold-label">
-                                    <label class="bmd-label-floating">Range threshold (0-0.5):Filter signal interval
+                                    <label class="bmd-label-floating">Range threshold (0-0.02):Filter signal interval
                                         topN+tailN</label>
                                     <input class="form-control" value="0.05" id="range_threshold"></input>
                                 </div>
@@ -71,7 +71,7 @@
         $('#range_threshold-label').addClass('is-filled')
         $('#vgae_iterations-label').addClass('is-filled')
         $('#vgae_iterations').val(1)
-        $('#range_threshold').val(0.05)
+        $('#range_threshold').val(0.01)
         $('#gene_set').val("")
     }
     function Example() {

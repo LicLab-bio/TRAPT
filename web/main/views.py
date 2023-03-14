@@ -1,7 +1,7 @@
-
-import main.models as md
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+
+import main.models as md
 
 
 ######## 网页路由 ########
@@ -10,6 +10,9 @@ def index(request):
 
 def analysis(request):
     return render(request, 'analysis.html')
+
+def browse(request):
+    return render(request, 'browse.html')
 
 def analysis_trs_activity(request):
     return render(request, 'analysis_trs_activity.html')
@@ -40,6 +43,19 @@ def tryAgain(request):
 
 
 ######## 数据路由 ########
+# TRs Info 数据
+def getTRsInfo(request):
+    kwargs = {
+        'draw': request.GET['draw'],
+        'order_column': request.GET['order[0][column]'],
+        'order_dir': request.GET['order[0][dir]'],
+        'start': request.GET['start'],
+        'length': request.GET['length'],
+        'search_value': request.GET['search[value]'],
+    }
+
+    result = md._getTRsInfo(**kwargs)
+    return JsonResponse(result, safe=False)
 
 # TRs Activity Table 数据
 def getTRsActivityTable(request):
