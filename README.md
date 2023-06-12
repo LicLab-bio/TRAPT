@@ -21,14 +21,15 @@ Run TRAPT using a [case](http://www.licpathway.net/TRAPT/static/download/ESR1@Da
 
 ```python
 import os
-from TRAPT.TRAPT import Args, RP_Matrix, runTRAPT
+from TRAPT.Tools import Args, RP_Matrix
+from TRAPT.Run import runTRAPT
 
 # library path
 library = 'library'
 # input file path
 input = 'ESR1@DataSet_01_111_down500.txt'
 # output file path
-output = 'output/ESR1@DataSet_01_111_down500'
+output = 'output/test/ESR1@DataSet_01_111_down500'
 
 rp_matrix = RP_Matrix(library)
 args = Args(input, output)
@@ -54,5 +55,5 @@ python3 CalcTRSampleRPMatrix.py H3K27ac library
 # Prediction (TR-ATAC)-RP matrix
 python3 CalcTRSampleRPMatrix.py ATAC library
 # TRAPT predicts TR activity
-python3 TRAPT.py library input output
+python3 Run.py input output library
 ```
