@@ -17,7 +17,7 @@ from torch_geometric.data import Data
 from torch_geometric.nn import VGAE, GCNConv, InnerProductDecoder
 from tqdm import tqdm
 
-from TRAPT.TRAPT import RPMatrix
+from TRAPT.Tools import RPMatrix
 
 
 def seed_torch(seed=2023):

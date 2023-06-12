@@ -1,4 +1,5 @@
 import random
+import sys
 
 import numpy as np
 import pandas as pd
@@ -10,7 +11,6 @@ from keras.layers import Dense, Dropout
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.regularizers import Regularizer
-
 
 def seed_tensorflow(seed=2023):
     random.seed(seed)
