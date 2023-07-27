@@ -1,6 +1,5 @@
 import functools
 import os
-import sys
 
 import numpy as np
 import pandas as pd
@@ -8,7 +7,6 @@ import pandas as pd
 from TRAPT.Tools import RP_Matrix, Args, Type
 from TRAPT.CalcTRAUC import CalcTRAUC
 from TRAPT.DLFS import FeatureSelection
-
 
 def get_params(func):
     @functools.wraps(func)
@@ -71,11 +69,24 @@ def runTRAPT(rp_matrix: RP_Matrix, args: Args):
     return TR_detail
 
 
-if __name__ == "__main__":
-    input = sys.argv[1]
-    output = sys.argv[2]
-    library = sys.argv[3]
+def main():
+    from optparse import OptionParser
+    usage = "usage: %prog [options] -l [LIBRARY] -i [INPUT] -o [OUTPUT]"
+    parser = OptionParser(usage = usage)
+    parser.add_option("-l","--library", dest="library",nargs = 1, default="library", help = "Enter the library path, default is './library'")
+    parser.add_option("-p","--threads", dest="threads",nargs = 1, default=16, help = "Number of threads to launch, default is 16")
+    parser.add_option("-t","--trunk_size", dest="trunk_size",nargs = 1, default=32768, help = "Block size. If the memory is insufficient, set a smaller value. The default value is 32768")
+    parser.add_option("-i","--input", dest="input",nargs = 1, default=None, help = "Enter a gene list")
+    parser.add_option("-o","--output", dest="output",nargs = 1, default=None, help = "Enter an output folder")
+    options,args = parser.parse_args()
+    library = options.library
+    threads = options.threads
+    trunk_size = options.trunk_size
+    input = options.input
+    output = options.output
     rp_matrix = RP_Matrix(library)
-    args = Args(input, output)
-    os.system(f"mkdir -p {output}")
+    args = Args(input, output, threads, trunk_size)
     runTRAPT([rp_matrix, args])
+
+if __name__ == "__main__":
+    main()

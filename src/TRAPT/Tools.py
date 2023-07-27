@@ -1,4 +1,3 @@
-import functools
 import os
 
 import anndata as ad
@@ -11,6 +10,8 @@ class Args:
         self.output = output
         self.threads = threads
         self.trunk_size = trunk_size
+        if not os.path.exists(output):
+            os.mkdir(output)
 
 
 class Type:

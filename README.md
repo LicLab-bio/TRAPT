@@ -19,6 +19,17 @@ pip install TRAPT
 
 Run TRAPT using a [case](http://www.licpathway.net/TRAPT/static/download/ESR1@DataSet_01_111_down500.txt):
 
+Use shell commands:
+```bash
+# help
+trapt --help
+# run
+trapt --library library \
+      --input ESR1@DataSet_01_111_down500.txt \
+      --output output/test/ESR1@DataSet_01_111_down500
+```
+
+Using the python interface:
 ```python
 import os
 from TRAPT.Tools import Args, RP_Matrix
@@ -33,13 +44,12 @@ output = 'output/test/ESR1@DataSet_01_111_down500'
 
 rp_matrix = RP_Matrix(library)
 args = Args(input, output)
-os.system(f'mkdir -p {output}')
 runTRAPT([rp_matrix, args])
 ```
 
-### Detail
+### De novo library
 
-```sh
+```bash
 # Constructing TR-RP matrix
 python3 CalcTRRPMatrix.py library
 # Constructing H3K27ac-RP matrix
@@ -54,6 +64,4 @@ python3 DLVGAE.py ATAC library
 python3 CalcTRSampleRPMatrix.py H3K27ac library
 # Prediction (TR-ATAC)-RP matrix
 python3 CalcTRSampleRPMatrix.py ATAC library
-# TRAPT predicts TR activity
-python3 Run.py input output library
 ```
